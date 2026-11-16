@@ -1,0 +1,36 @@
+{
+  "name": "turbogelo-loja",
+  "main": "cloudflare/worker.js",
+  "compatibility_date": "2026-01-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*",
+      "/videos/*"
+    ]
+  },
+  "vars": {
+    "APP_ORIGIN": "https://turbogelo.online",
+    "PAYMENTS_ENABLED": "false"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "turbogelo-pedidos",
+      "database_id": "SUBSTITUA_PELO_ID_D1"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "turbogelo.online",
+      "custom_domain": true
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  }
+}
