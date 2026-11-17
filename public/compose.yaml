@@ -1,0 +1,33 @@
+services:
+  loja:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:3000}
+      AURIONFY_PUBLIC_KEY: ${AURIONFY_PUBLIC_KEY:-}
+      AURIONFY_SECRET_KEY: ${AURIONFY_SECRET_KEY:-}
+      PAYMENTS_ENABLED: ${PAYMENTS_ENABLED:-false}
+      CRON_SECRET: ${CRON_SECRET:-}
+      DATABASE_URL: postgresql://turbogelo:${POSTGRES_PASSWORD:?Execute npm run preparar antes de iniciar}@banco:5432/turbogelo
+      PORT: 3000
+    depends_on:
+      banco:
+        condition: service_healthy
+  banco:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: turbogelo
+      POSTGRES_USER: turbogelo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Execute npm run preparar antes de iniciar}
+    volumes:
+      - pedidos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U turbogelo -d turbogelo"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+volumes:
+  pedidos:

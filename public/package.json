@@ -1,0 +1,31 @@
+{
+  "name": "turbogelo-aurionfy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "db:init": "node --env-file-if-exists=.env scripts.mjs init",
+    "reconcile": "node --env-file-if-exists=.env scripts.mjs reconcile",
+    "test": "npm run build:cloudflare && node --test test/*.test.mjs",
+    "preparar": "node preparar.mjs",
+    "verificar": "node --env-file-if-exists=.env verificar.mjs",
+    "build:cloudflare": "node cloudflare/build.mjs",
+    "deploy": "wrangler deploy",
+    "db:cloudflare": "wrangler d1 execute turbogelo-pedidos --remote --file cloudflare/schema.sql"
+  },
+  "dependencies": {
+    "pg": "8.16.3",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jsdom": "^26.1.0",
+    "miniflare": "^4.20260730.0",
+    "pg-mem": "3.0.5",
+    "wrangler": "^4.163.0"
+  }
+}
