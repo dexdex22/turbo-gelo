@@ -1,0 +1,36 @@
+VERIFICAÇÃO TURBOGELO — 16/11/2026
+
+Base: TURBOGELO-PROJETO-PRONTO.zip, preservando estrutura e visual originais.
+
+RESULTADOS
+- 50 marcas e 1.112 modelos preservados.
+- 2.224 fotos de catálogo recuperadas, decodificadas e incluídas localmente em WebP.
+- 2.270 imagens raster verificadas; zero arquivos corrompidos e zero fotos de catálogo ausentes.
+- Dois MP4 anexados incluídos e decodificados sem erros pelo FFmpeg.
+- Loja renderizada em DOM de teste: dois vídeos e referências de mídia local presentes.
+- 25 testes automatizados aprovados, zero falhas.
+- Testes cobrem preços no servidor, Pix/boleto/cartão simulado, tokenização simulada, isolamento de pedidos, idempotência, recuperação de tentativa incerta e rejeição de webhook falso.
+- Worker testado com D1 local e API de pagamento simulada.
+- Respostas parciais de vídeo (HTTP 206) testadas.
+- Wrangler deploy --dry-run aprovado. Não houve publicação na conta Cloudflare.
+- SDK público Aurionfy acessível. Não houve autenticação com a conta nem transação real.
+
+CORREÇÕES
+- Removido empacotamento de mídia em base64 dentro do Worker; imagens e vídeos publicados por Static Assets.
+- Fotos do catálogo deixaram de depender do armazenamento externo da loja original.
+- Vídeos restaurados nos componentes existentes, com controles.
+- Domínio canônico atualizado para turbogelo.online.
+- Removida geração de preços anteriores fictícios e desativado contador promocional que reiniciava sozinho; preços reais dos kits preservados.
+- Removidas chamadas antigas de Google Ads e Vercel Insights da página, que não correspondem à publicação atual.
+- Instruções antigas de colar código no editor substituídas pelo guia de publicação do pacote inteiro.
+
+LIMITES E PENDÊNCIAS
+- A revisão funcional usou testes DOM e runtime local; não foi possível concluir a inspeção visual em navegador neste ambiente.
+- Cobrança real e 3DS precisam de validação com as chaves da conta e domínio publicado.
+- O projeto original não contém políticas completas; rodapé ainda indica esses itens como pendentes.
+- Dados comerciais e atendimento do rodapé são os herdados do projeto; sua titularidade não foi confirmada.
+- Não foi verificada disponibilidade física de estoque, produção ou prazos de entrega.
+- Nenhuma chave secreta foi adicionada ao pacote.
+
+PUBLICAÇÃO
+Siga PUBLICAR-NA-CLOUDFLARE.md. PAYMENTS_ENABLED inicia como false e deve ser ativado após a configuração da conta.
