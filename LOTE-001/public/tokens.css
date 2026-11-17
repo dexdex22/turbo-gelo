@@ -1,0 +1,61 @@
+/* ===========================================================================
+   TOKENS — identidade visual TURBOGELO.
+   Preto automotivo + ciano gelo + vermelho exclusivo do botão de compra.
+   Fontes servidas localmente (fontes/), sem CDN.
+   ========================================================================= */
+@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: swap; src: url("fontes/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: swap; src: url("fontes/barlow-condensed-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-display: swap; src: url("fontes/barlow-condensed-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 400; font-display: swap; src: url("fontes/barlow-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 500; font-display: swap; src: url("fontes/barlow-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 600; font-display: swap; src: url("fontes/barlow-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow"; font-weight: 700; font-display: swap; src: url("fontes/barlow-latin-700-normal.woff2") format("woff2"); }
+
+:root {
+  /* --- cor ------------------------------------------------------------- */
+  --brand-cyan: #0098CA;
+  --brand-black: #0A0B0D;
+  --cta-red: #D10A0A;
+  --bg: #F2F5F7;
+  --muted: #5B6470;
+  --border: #DDE3E8;
+  --radius-card: 12px;
+  --radius-button: 10px;
+  --c-marca:        var(--brand-cyan);   /* ciano TURBOGELO: destaques, seleção, ícones */
+  --c-marca-escura: #0A0B0D;   /* preto automotivo: barra de aviso, menu      */
+  --c-destaque:     #00B2DC;   /* ciano vivo: selos "melhor preço"            */
+  --c-compra:       #D10A0A;   /* EXCLUSIVA do botão de compra                */
+  --c-compra-ativa: #A80808;
+  --c-texto:        #0A0B0D;
+  --c-apoio:        #5B6470;
+  --c-linha:        #DDE3E8;
+  --c-fundo:        #F2F5F7;
+  --c-cartao:       #FFFFFF;
+  --c-estrela:      #F0A91B;
+  --c-ok:           #0098CA;
+  --c-nao:          #D10A0A;
+
+  --c-marca-fraca:  color-mix(in srgb, var(--c-marca) 7%, #fff);
+  --c-marca-media:  color-mix(in srgb, var(--c-marca) 14%, #fff);
+  --c-destaque-fraca: color-mix(in srgb, var(--c-destaque) 8%, #fff);
+
+  /* --- tipografia ------------------------------------------------------ */
+  --fonte: "Barlow", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --fonte-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --peso-forte: 800;
+  --peso-medio: 600;
+
+  /* --- forma ------------------------------------------------------------ */
+  --r-cta:    10px;
+  --r-cartao: var(--radius-card);
+  --r-caixa:  12px;
+  --r-pilula: 999px;
+
+  /* --- layout ----------------------------------------------------------- */
+  --coluna: 480px;
+  --largura: 1240px;        /* largura máxima no desktop                   */
+  --leitura: 760px;         /* coluna de leitura das seções no desktop     */
+  --respiro: 16px;
+  --sombra-cartao: 0 1px 2px rgba(10,11,13,.06), 0 8px 24px -12px rgba(10,11,13,.12);
+  --sombra-alta:   0 12px 28px rgba(10,11,13,.18);
+}
