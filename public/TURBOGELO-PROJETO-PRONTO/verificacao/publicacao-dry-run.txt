@@ -1,0 +1,17 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+
+ ⛅️ wrangler 4.163.0
+────────────────────
+✨ Read 3606 files from the assets directory /workspace/scratch/d6db5fa2081f/work/TURBOGELO-PROJETO-PRONTO/public
+Total Upload: 79.05 KiB / gzip: 19.56 KiB
+Your Worker has access to the following bindings:
+Binding                                                Resource                  
+env.DB (turbogelo-pedidos)                             D1 Database               
+env.ASSETS                                             Assets                    
+env.APP_ORIGIN ("https://turbogelo.online")            Environment Variable      
+env.PAYMENTS_ENABLED ("false")                         Environment Variable      
+
+--dry-run: exiting now.

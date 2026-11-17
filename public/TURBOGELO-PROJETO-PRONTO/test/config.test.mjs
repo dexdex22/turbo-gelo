@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {checkConfig} from '../lib/config-check.mjs';
+const complete={APP_ORIGIN:'https://loja.test',DATABASE_URL:'postgresql://user:password@db:5432/store',AURIONFY_PUBLIC_KEY:'pk_test',AURIONFY_SECRET_KEY:'sk_test',CRON_SECRET:'x'.repeat(32),PAYMENTS_ENABLED:'true'};
+test('publicação exige HTTPS e campos preenchidos quando pagamentos estão ativos',()=>{assert.equal(checkConfig(complete).errors.length,0);assert(checkConfig({...complete,APP_ORIGIN:'http://localhost:3000'}).errors.length);assert(checkConfig({...complete,AURIONFY_SECRET_KEY:''}).errors.length);assert(checkConfig({...complete,APP_ORIGIN:'https://loja.test/path'}).errors.length);});
+test('prévia sem chaves continua disponível, sem habilitar pagamentos',()=>{const r=checkConfig({APP_ORIGIN:'http://localhost:3000',PAYMENTS_ENABLED:'false'});assert.equal(r.errors.length,0);assert.equal(r.live,false);assert.equal(r.pending.length,4);});

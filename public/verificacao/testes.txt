@@ -1,0 +1,44 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> turbogelo-aurionfy@1.0.0 test
+> npm run build:cloudflare && node --test test/*.test.mjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> turbogelo-aurionfy@1.0.0 build:cloudflare
+> node cloudflare/build.mjs
+
+Worker gerado; arquivos públicos servidos pelo binding ASSETS.
+✔ Worker real: loja, arquivos e checkout; pagamentos bloqueados sem configuração (988.391684ms)
+✔ Worker D1 e gateway simulado: pix, duplicidade, isolamento e webhook (745.192745ms)
+✔ Worker D1 e gateway simulado: boleto, duplicidade, isolamento e webhook (580.116073ms)
+✔ Worker D1 e gateway simulado: credit_card, duplicidade, isolamento e webhook (525.860531ms)
+✔ Worker D1: falha de rede reserva tentativa; webhook falso não confirma; consulta legítima recupera (568.640969ms)
+✔ publicação exige HTTPS e campos preenchidos quando pagamentos estão ativos (1.468385ms)
+✔ prévia sem chaves continua disponível, sem habilitar pagamentos (0.236846ms)
+✔ checkout desabilitado não permite cobrança e mostra preços corretos (150.446281ms)
+✔ interface de pix mostra código e bloqueia duplo envio (69.627078ms)
+✔ interface de boleto mostra código e bloqueia duplo envio (60.660225ms)
+✔ falha de rede recupera tentativa existente sem reenviar cobrança (57.916791ms)
+✔ recarregar checkout com pedido existente só consulta status (33.068464ms)
+✔ cartão tokeniza no navegador e envia só hash; prepara e finaliza 3DS (83.147323ms)
+✔ preços oficiais, desconto Pix e frete calculados no servidor (1.659252ms)
+✔ validação de CPF, quantidade, cor, endereço e parcelas (0.929025ms)
+✔ payload preserva personalização, endereço e total; cartão só por hash (0.910637ms)
+✔ cria pix e consulta sem cobrar novamente (105.780426ms)
+✔ cria boleto e consulta sem cobrar novamente (18.58472ms)
+✔ cria credit_card e consulta sem cobrar novamente (15.209611ms)
+✔ concorrência usa reserva atômica, uma única chamada de cobrança (44.843004ms)
+✔ timeout não cria nova cobrança e pode ser reconciliado por evento verificado (11.033309ms)
+✔ mesma chave com carrinho alterado é rejeitada (7.787415ms)
+✔ eventos forjados, valor divergente e pagamento parcial não confirmam pedido (0.553361ms)
+✔ URLs inseguras do boleto e redirecionamento não vão ao navegador (0.201212ms)
+✔ loja original renderiza dois vídeos, catálogo completo e mídia local (208.852058ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3868.068272
