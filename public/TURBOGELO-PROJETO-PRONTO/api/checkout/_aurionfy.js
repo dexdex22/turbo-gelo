@@ -22,21 +22,30 @@ async function chamar(metodo, caminho, corpo) {
   const { publicKey, secretKey, ok } = chaves();
   if (!ok) throw new ErroGateway('AURIONFY_PUBLIC_KEY ou AURIONFY_SECRET_KEY não configuradas na Vercel', 0);
 
-  const auth = Buffer.from(publicKey + ':' + secretKey).toString('base64');
+  // A documentação pede "public:secret". Algumas contas só aceitam "secret:x";
+  // se o primeiro formato der 401, tentamos o segundo (um 401 não cria venda).
+  const formatos = [
+    ['public:secret', publicKey + ':' + secretKey],
+    ['secret:x', secretKey + ':x'],
+  ];
   let resp;
-  try {
-    resp = await fetch(BASE + caminho, {
-      method: metodo,
-      headers: {
-        Authorization: 'Basic ' + auth,
-        Accept: 'application/json',
-        ...(corpo ? { 'Content-Type': 'application/json' } : {}),
-      },
-      body: corpo ? JSON.stringify(corpo) : undefined,
-      signal: AbortSignal.timeout(25000),
-    });
-  } catch (e) {
-    throw new ErroGateway('Falha de rede ao chamar a Aurionfy: ' + e.message, -1);
+  for (const [nome, par] of formatos) {
+    try {
+      resp = await fetch(BASE + caminho, {
+        method: metodo,
+        headers: {
+          Authorization: 'Basic ' + Buffer.from(par).toString('base64'),
+          Accept: 'application/json',
+          ...(corpo ? { 'Content-Type': 'application/json' } : {}),
+        },
+        body: corpo ? JSON.stringify(corpo) : undefined,
+        signal: AbortSignal.timeout(25000),
+      });
+    } catch (e) {
+      throw new ErroGateway('Falha de rede ao chamar a Aurionfy: ' + e.message, -1);
+    }
+    console.log('[aurionfy] autenticação', nome, '→ HTTP', resp.status);
+    if (resp.status !== 401) break;
   }
 
   const bruto = await resp.text();
