@@ -15,6 +15,8 @@ async function updateQuote(d=data()){quote=await request('quote',{method:'POST',
 async function initCard(){
  if(cardInit)return cardInit;
  cardInit=(async()=>{
+  // Gateways que recebem o cartão direto pela API (ex.: Mangofy): sem SDK nem 3DS no navegador.
+  if(config.cardMode==='direto'){cardSettings={hideCardForm:false,threeDSSecurityType:'NONE',threeDSSecurity:false};$('#card-fields').hidden=false;return;}
   if(!config.publicKey)throw Error('O cartão ainda não foi configurado pela loja.');
   await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://api.aurionfy.com/v1/js';s.onload=resolve;s.onerror=()=>reject(Error('Não foi possível carregar o pagamento com cartão.'));document.head.append(s);});
   const helper=window.ShieldHelper;cardSDK=helper?window[helper.getModuleName()]:window.AURIONFY;
@@ -65,12 +67,15 @@ form.addEventListener('submit',async e=>{
   await updateQuote(d);
   if(d.paymentMethod==='credit_card'){
    await initCard();if(cardSettings.threeDSSecurityType==='IFRAME'&&!iframeValid)throw Error('Preencha os dados do cartão no formulário seguro.');
+   if(config.cardMode==='direto'){d.card=cardData();clearCard();}
+   else{
    if(window.ShieldHelper)await window.ShieldHelper.prepareThreeDS({amount:quote.amount,installments:1});
    d.cardHash=await cardSDK.encrypt(cardData());clearCard();
    if(typeof d.cardHash!=='string')throw Error('O serviço não retornou um token de cartão válido.');
+   }
   }
   if(!attempt)keep({key:crypto.randomUUID()});
-  sent=true;const o=await request('create',{method:'POST',headers:{'Idempotency-Key':attempt.key},body:JSON.stringify(d)});delete d.cardHash;
+  sent=true;const o=await request('create',{method:'POST',headers:{'Idempotency-Key':attempt.key},body:JSON.stringify(d)});delete d.cardHash;delete d.card;
   keep({...attempt,orderId:o.orderId});showResult(o);$('#result').focus();
   if(d.paymentMethod==='credit_card'&&o.payment&&window.ShieldHelper&&['processing','waiting_payment','approved'].includes(o.state)){
    try{await window.ShieldHelper.finishThreeDS(o.payment,{disableRedirect:false});}catch{$('#result-message').textContent='A autenticação do cartão não foi concluída. Consulte o status ou continue pelo link do banco, se disponível.';}
