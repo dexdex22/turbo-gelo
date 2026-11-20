@@ -1,80 +1,35 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
-
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ===========================================================================
-     TEMPLATE BASE — LANDING DE PRODUTO ÚNICO (PT-BR)
-     ---------------------------------------------------------------------------
-     NÃO edite este arquivo para publicar um produto.
-     Todo o conteúdo vive em  produto.config.js
-     Cores, fonte e formas vivem em  tokens.css
-     Abra este arquivo direto no navegador (file://) para a prévia. Sem build,
-     sem npm, sem CDN, sem servidor.
-     ========================================================================= -->
-<title>TURBOGELO · O cooler com a cara do seu carro</title>
-<meta name="description" content="Cooler térmico de 45 L inspirado no seu carro. Escolha lado, modelo e cor, personalize a placa no checkout e confira o total antes de pagar.">
-<link rel="icon" href="logo/favicon.svg" type="image/svg+xml">
-<link rel="preload" as="image" type="image/webp" fetchpriority="high" href="img/turbogelo/galeria/slot-01-hero.webp">
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="estilos.css">
-<script id="turbogelo-utmify-utms" src="tracking/utmify-utms.js" data-utmify-ignore-classes="whatsapp-clean" defer=""></script>
-<script>
-  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-</script>
-
-
-<!-- SEO e Open Graph são escritos por app.js a partir de PRODUTO.seo -->
-</head>
-<body>
-
-<!-- 1. barra de aviso -->
-<div id="aviso" hidden=""></div>
-
-<!-- 2. header fixo -->
-<header class="topo" id="topo" hidden=""></header>
-<aside class="urgency-banner" id="urgency-banner" role="banner" aria-live="polite" aria-label="Ciclo individual de 72 horas, renovado automaticamente enquanto a campanha estiver ativa. Não representa o encerramento da promoção." hidden="">
-  <span class="urgency-icon" aria-hidden="true">🔥</span>
-  <span class="urgency-text">PRE BLACK FRIDAY TERMINA EM</span>
-  <span class="urgency-countdown" id="urgency-countdown" aria-live="off">
-    <span class="unit"><strong>00</strong><small>d</small></span>
-    <span class="unit"><strong>00</strong><small>h</small></span>
-    <span class="unit"><strong>00</strong><small>m</small></span>
-    <span class="unit"><strong>00</strong><small>s</small></span>
-  </span>
-</aside>
-
-<!-- menu lateral -->
-<div id="menu" class="menu" hidden=""></div>
-
-<!-- 3..16 todas as seções, na ordem definida em app.js -->
-<main class="coluna moldura" id="pagina"></main>
-
-<!-- 17. rodapé -->
-<footer class="rodape coluna" id="rodape" hidden=""></footer>
-
-<!-- 18. barra fixa de compra -->
-<div id="barraFixa" class="barra-fixa" hidden=""></div>
-  <a class="whats-fixo whatsapp-clean" href="https://wa.me/5511916185537" target="_blank" rel="noopener" aria-label="Fale conosco no WhatsApp">
-    <img src="img/turbogelo/ui/whatsapp-sticky_v%3D3.webp" alt="" width="56" height="56">
-  </a>
-
-<!-- modal (guia de medidas) -->
-<div id="modal" class="modal" hidden=""></div>
-
-<noscript>
-  <div style="max-width:480px;margin:40px auto;padding:16px;font-family:system-ui">
-    <strong>Esta página precisa de JavaScript.</strong>
-    O conteúdo é montado a partir de <code>produto.config.js</code>.
-  </div>
-</noscript>
-
-<script src="carros.catalogo.js"></script>
-<script src="precos.js"></script>
-<script src="produto.config.js"></script>
-<script src="urgency.js" defer=""></script>
-<script src="checkout.js"></script>
-<script src="app.js"></script>
-<script src="avaliacoes.js" defer=""></script>
-
-
-</body></html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow"><title>Finalizar pedido · TURBOGELO</title><link rel="icon" href="/logo/favicon.svg"><link rel="stylesheet" href="/checkout/style.css"><script src="/checkout/payment.js" defer></script></head><body>
+<header><a class="brand" href="/">TURBOGELO<span>FEITO COM A CARA DO SEU CARRO</span></a><a href="/" class="back">← Voltar à loja</a></header>
+<main><div class="intro"><span class="eyebrow">FALTA POUCO PARA SER SEU</span><h1>Seu próximo rolê<br>começa aqui.</h1><p>Confira os detalhes e escolha como pagar.</p></div>
+<div id="notice" role="status" class="notice" hidden></div>
+<div class="layout"><form id="payment-form" novalidate>
+<section class="card"><h2><span>01</span> Seu pedido</h2><div id="selection"></div></section>
+<section class="card"><h2><span>02</span> Seus dados</h2><div class="fields">
+<label class="wide">Nome completo<input name="name" autocomplete="name" required maxlength="120"></label>
+<label>E-mail<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+<label>Telefone com DDD<input name="phone" type="tel" autocomplete="tel" required maxlength="20"></label>
+<label class="wide">CPF ou CNPJ<input name="document" inputmode="numeric" required maxlength="18"></label></div></section>
+<section class="card"><h2><span>03</span> Onde vamos entregar?</h2><div class="fields">
+<label>CEP<input name="zipCode" autocomplete="postal-code" inputmode="numeric" required maxlength="9"></label>
+<label>Estado<select name="state" autocomplete="address-level1" required><option value="">Selecione</option></select></label>
+<label class="wide">Rua ou avenida<input name="street" autocomplete="address-line1" required maxlength="120"></label>
+<label>Número<input name="streetNumber" required maxlength="20"></label><label>Complemento <small>(opcional)</small><input name="complement" autocomplete="address-line2" maxlength="120"></label>
+<label>Bairro<input name="neighborhood" required maxlength="120"></label><label>Cidade<input name="city" autocomplete="address-level2" required maxlength="120"></label>
+</div><fieldset><legend>Entrega</legend><div id="freight" class="choices"></div></fieldset></section>
+<section class="card"><h2><span>04</span> Como prefere pagar?</h2><fieldset><legend class="sr">Forma de pagamento</legend><div class="choices methods">
+<label><input type="radio" name="paymentMethod" value="pix" checked><strong>Pix</strong><small>10% de desconto</small></label>
+<label><input type="radio" name="paymentMethod" value="credit_card"><strong>Cartão</strong><small>Crédito em 1 vez</small></label>
+<label><input type="radio" name="paymentMethod" value="boleto"><strong>Boleto</strong><small>Pagamento à vista</small></label>
+</div></fieldset><p id="method-note">O código Pix será gerado após a confirmação do pedido.</p>
+<div id="card-section" hidden><div id="card-fields" class="fields">
+<label class="wide">Nome impresso no cartão<input id="card-name" autocomplete="cc-name" maxlength="120"></label>
+<label class="wide">Número do cartão<input id="card-number" autocomplete="cc-number" inputmode="numeric" maxlength="23"></label>
+<label>Validade (MM/AAAA)<input id="card-expiry" autocomplete="cc-exp" placeholder="MM/AAAA" inputmode="numeric" maxlength="7"></label>
+<label>Código de segurança<input id="card-cvv" type="password" autocomplete="cc-csc" inputmode="numeric" maxlength="4"></label>
+</div><div id="three-ds"></div><p class="muted">A autenticação pode ser solicitada pelo banco do seu cartão.</p></div>
+<p class="privacy">Seus dados de contato e entrega serão usados para processar este pedido. O pagamento é processado pela Aurionfy.</p>
+<div id="error" role="alert" tabindex="-1" hidden></div><button id="pay" class="primary" type="submit" disabled>Carregando pagamento…</button>
+</section></form>
+<aside><section class="card summary"><img src="/img/turbogelo/galeria/slot-01-hero.webp" alt="Cooler TURBOGELO" class="product"><span class="eyebrow">RESUMO DO PEDIDO</span><h2 id="kit-name">Seu TURBOGELO</h2><div class="line"><span>Produtos</span><strong id="subtotal">—</strong></div><div class="line"><span>Entrega</span><strong id="shipping">—</strong></div><div class="line total"><span>Total</span><strong id="total">—</strong></div><p id="discount" class="discount"></p><a class="support" href="https://wa.me/5511972233474" target="_blank" rel="noopener noreferrer">Precisa de ajuda? Fale com a loja ↗</a></section></aside>
+</div><section id="result" class="card result" hidden tabindex="-1"><span class="eyebrow">ACOMPANHE SEU PAGAMENTO</span><h2 id="result-title"></h2><p id="result-message"></p><p id="order-ref" class="muted"></p><div id="payment-details"></div><button type="button" id="refresh" class="primary">Verificar pagamento</button><a class="support" href="https://wa.me/5511972233474" target="_blank" rel="noopener noreferrer">Falar com a loja ↗</a></section>
+<noscript>Ative o JavaScript para concluir seu pedido.</noscript></main><footer>TURBOGELO · Seu estilo. Sua aventura.</footer></body></html>
