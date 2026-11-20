@@ -393,7 +393,7 @@ window.PRODUTO = {
     descricao: 'Coolers térmicos inspirados no seu carro. Escolha modelo, cor e placa.',
     colunas: [
       { titulo: 'Suporte', itens: [
-        { rotulo: 'WhatsApp: (11) 91618-5537', href: 'https://wa.me/5511916185537', externo: true },
+        { rotulo: 'WhatsApp: (11) 97223-3474', href: 'https://wa.me/5511972233474', externo: true },
         { rotulo: 'sac@turbogelo.com',       somenteTexto: true },
       ] },
       { titulo: 'Institucional', itens: [
@@ -412,7 +412,7 @@ window.PRODUTO = {
         { rotulo: 'Escolha do modelo',       href: '#comprar' },
         { rotulo: 'Personalização da placa', pendente: 'página explicativa ainda não fornecida' },
         { rotulo: 'Acompanhe seu pedido', pendente: 'consulta de rastreio ainda depende de integração' },
-        { rotulo: 'Fale no WhatsApp',        href: 'https://wa.me/5511916185537', externo: true },
+        { rotulo: 'Fale no WhatsApp',        href: 'https://wa.me/5511972233474', externo: true },
       ] },
     ],
     pagamentos: {
@@ -435,7 +435,7 @@ window.PRODUTO = {
       nomeEmpresarial: 'Turbo Gelo Comércio e Distribuição Ltda',
       cnpj: '67.222.449/0001-75',
       emailSuporte: 'sac@turbogelo.com',
-      whatsappSuporte: '(11) 91618-5537',
+      whatsappSuporte: '(11) 97223-3474',
     },
     copyright: '© {ano} {marca} · Todos os direitos reservados.',
 

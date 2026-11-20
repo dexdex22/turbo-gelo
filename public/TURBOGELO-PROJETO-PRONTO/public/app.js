@@ -773,7 +773,7 @@
         'Tipo: ' + (u.tipo || 'a definir') + '\n' +
         (u.marca ? 'Marca: ' + u.marca + '\n' : '') +
         'Meu carro (marca, modelo e ano): ';
-      html += '<a class="config__link whatsapp-clean" href="https://wa.me/5511916185537?text=' + encodeURIComponent(msgWhats) + '" target="_blank" rel="noopener noreferrer">Não encontrou seu carro? Informe manualmente →</a>';
+      html += '<a class="config__link whatsapp-clean" href="https://wa.me/5511972233474?text=' + encodeURIComponent(msgWhats) + '" target="_blank" rel="noopener noreferrer">Não encontrou seu carro? Informe manualmente →</a>';
     }
     var foto = fotoDaUnidade(u);
     if (foto) {
