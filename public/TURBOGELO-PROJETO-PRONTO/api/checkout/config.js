@@ -7,5 +7,10 @@ export default function handler(req, res) {
   const g = gateway();
   const desligado = String(process.env.CHECKOUT_DESATIVADO || '').toLowerCase() === 'true';
   if (!g.configurado()) console.error('[checkout] gateway', g.nome, 'sem chaves nas variáveis da Vercel');
-  responder(res, 200, { catalog: CATALOGO, publicKey: g.chavePublica(), enabled: g.configurado() && !desligado });
+  responder(res, 200, {
+    catalog: CATALOGO,
+    publicKey: g.chavePublica(),
+    cardMode: g.aceitaCartao ? (g.modoCartao || 'sdk') : null,
+    enabled: g.configurado() && !desligado,
+  });
 }

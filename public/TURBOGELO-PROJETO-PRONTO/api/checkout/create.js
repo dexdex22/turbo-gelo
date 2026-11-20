@@ -2,6 +2,7 @@ import { cotar, ErroPedido, texto } from './_catalogo.js';
 import { gateway } from './_gateway.js';
 import { ErroGateway, paraCliente, guardarPagamento } from './_comum.js';
 import { responder, origemValida, lerJson, host, ipCliente } from './_http.js';
+import { liberarCartao } from './_limite.js';
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
 const TRACKING = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'src', 'sck', 'xtracky_lead_id'];
@@ -25,6 +26,32 @@ function cnpjValido(c) {
     return r < 2 ? 0 : 11 - r;
   };
   return calc(12) === Number(c[12]) && calc(13) === Number(c[13]);
+}
+
+function luhn(n) {
+  let soma = 0;
+  for (let i = 0; i < n.length; i++) {
+    let d = Number(n[n.length - 1 - i]);
+    if (i % 2) { d *= 2; if (d > 9) d -= 9; }
+    soma += d;
+  }
+  return soma % 10 === 0;
+}
+
+/* Cartão digitado na página (modo "direto"). Nunca vai para log. */
+function cartaoDireto(c) {
+  c = c && typeof c === 'object' ? c : {};
+  const number = digitos(c.number);
+  const holderName = texto(c.holderName, 60).toUpperCase();
+  const expMonth = Number(c.expMonth), expYear = Number(c.expYear);
+  const cvv = digitos(c.cvv);
+  const hoje = new Date();
+  const vencido = expYear < hoje.getFullYear() || (expYear === hoje.getFullYear() && expMonth < hoje.getMonth() + 1);
+  if (!/^\d{13,19}$/.test(number) || !luhn(number)) throw new ErroPedido('Confira o número do cartão.');
+  if (holderName.length < 3) throw new ErroPedido('Informe o nome impresso no cartão.');
+  if (!(expMonth >= 1 && expMonth <= 12) || !(expYear >= 2000 && expYear <= 2100) || vencido) throw new ErroPedido('Confira a validade do cartão.');
+  if (!/^\d{3,4}$/.test(cvv)) throw new ErroPedido('Confira o código de segurança do cartão.');
+  return { number, holderName, expMonth, expYear, cvv };
 }
 
 function cliente(c) {
@@ -104,14 +131,22 @@ export default async function handler(req, res) {
       tracking: Object.keys(tracking).length ? tracking : null,
     };
     if (pedido.paymentMethod === 'credit_card') {
-      if (typeof d.cardHash !== 'string' || !d.cardHash || d.cardHash.length > 10000) {
-        throw new ErroPedido('Não recebemos os dados do cartão. Preencha novamente.');
+      if (g.modoCartao === 'direto') {
+        venda.cartaoDireto = cartaoDireto(d.card);
+        if (!liberarCartao(venda.ip)) {
+          console.warn('[checkout/create] limite de tentativas com cartão atingido, ip', venda.ip);
+          return responder(res, 429, { error: 'Muitas tentativas com cartão. Aguarde alguns minutos ou pague com Pix.' });
+        }
+      } else {
+        if (typeof d.cardHash !== 'string' || !d.cardHash || d.cardHash.length > 10000) {
+          throw new ErroPedido('Não recebemos os dados do cartão. Preencha novamente.');
+        }
+        venda.cartao = d.cardHash;
       }
-      venda.cartao = d.cardHash;
     }
   } catch (e) {
     if (e instanceof ErroPedido) return responder(res, e.status, { error: e.message });
-    console.error('[checkout/create] erro ao montar a venda', e);
+    console.error('[checkout/create] erro ao montar a venda:', e && e.message);
     return responder(res, 400, { error: 'Confira os dados do pedido.' });
   }
 

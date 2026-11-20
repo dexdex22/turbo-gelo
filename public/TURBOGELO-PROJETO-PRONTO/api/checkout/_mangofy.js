@@ -11,9 +11,18 @@ const storeCode = () => (process.env.MANGOFY_STORE_CODE || '').trim();
 const base = () => (process.env.MANGOFY_URL || 'https://checkout.mangofy.com.br').trim().replace(/\/+$/, '');
 
 export const configurado = () => Boolean(apiKey() && storeCode());
-export const chavePublica = () => null;  // cartão não habilitado nesta integração: só Pix e boleto
+export const chavePublica = () => null;
 export const segredo = () => apiKey() + ':' + storeCode();
-export const aceitaCartao = false;
+export const aceitaCartao = true;
+// O cartão vai direto pela API (número, validade, CVV), sem SDK no navegador.
+export const modoCartao = 'direto';
+
+/* Tira número de cartão e CVV de qualquer texto antes de ir para log ou erro. */
+function semCartao(valor) {
+  return JSON.parse(JSON.stringify(valor === undefined ? null : valor)
+    .replace(/\d{12,19}/g, '****')
+    .replace(/("(?:cvv|card_cvv|security_code)"\s*:\s*)"[^"]*"/gi, '$1"***"'));
+}
 
 async function chamar(metodo, caminho, corpo) {
   let resp;
@@ -36,7 +45,10 @@ async function chamar(metodo, caminho, corpo) {
   let dados;
   try { dados = JSON.parse(bruto); } catch { dados = { message: bruto.slice(0, 300) }; }
   console.log('[mangofy]', metodo, caminho, '→ HTTP', resp.status, dados && dados.payment_status ? 'status ' + dados.payment_status : '');
+  // Cartão recusado volta como HTTP 400, mas com a venda no corpo: é um resultado, não um erro.
+  if (!resp.ok && dados && typeof dados === 'object' && dados.payment_code && dados.payment_status) return dados;
   if (!resp.ok) {
+    dados = semCartao(dados);
     const msg = typeof dados === 'string' ? dados
       : (dados && (dados.message || dados.error || (dados.errors && JSON.stringify(dados.errors)))) || 'HTTP ' + resp.status;
     throw new ErroGateway(String(msg).slice(0, 300), resp.status, dados);
@@ -76,11 +88,11 @@ function converter(bruto, idPedido) {
 }
 
 export async function criar(v) {
-  if (v.metodo === 'credit_card') throw new ErroGateway('Cartão indisponível no momento. Escolha Pix ou boleto.', 422);
   const e = v.endereco;
+  const metodo = v.metodo === 'boleto' ? 'billet' : v.metodo === 'credit_card' ? 'credit_card' : 'pix';
   const corpo = {
     external_code: v.referencia,
-    payment_method: v.metodo === 'boleto' ? 'billet' : 'pix',
+    payment_method: metodo,
     payment_format: 'regular',
     installments: 1,
     payment_amount: v.amount,
@@ -103,8 +115,17 @@ export async function criar(v) {
       },
     },
   };
-  if (corpo.payment_method === 'pix') corpo.pix = { expires_in_days: 1 };
-  else corpo.billet = { expires_in_days: 3 };
+  if (metodo === 'pix') corpo.pix = { expires_in_days: 1 };
+  else if (metodo === 'billet') corpo.billet = { expires_in_days: 3 };
+  else {
+    const c = v.cartaoDireto;
+    if (!c) throw new ErroGateway('dados do cartão ausentes', 422);
+    corpo.card = {
+      number: c.number, holder_name: c.holderName,
+      expiration_month: c.expMonth, expiration_year: c.expYear,
+      cvv: c.cvv, soft_descriptor: 'TURBOGELO',
+    };
+  }
   return converter(await chamar('POST', '/api/v1/payment', corpo));
 }
 
