@@ -43,6 +43,32 @@ export function idDoPedido(numero, segredo) {
   return crypto.timingSafeEqual(Buffer.from(assinatura(m[1], segredo)), Buffer.from(m[2])) ? m[1] : null;
 }
 
+/* Cópia dos dados de pagamento (QR do Pix / linha do boleto) num cookie do
+   próprio navegador do cliente. Alguns gateways não devolvem esses dados na
+   consulta; com o cookie, o QR continua na tela mesmo assim.               */
+const nomeCookie = (id) => 'tg_pg_' + String(id).replace(/[^A-Za-z0-9]/g, '').slice(0, 40);
+
+export function guardarPagamento(res, v) {
+  if (!v.pix && !v.boleto) return;
+  const valor = Buffer.from(JSON.stringify({ pix: v.pix, boleto: v.boleto, amount: v.amount, state: v.state })).toString('base64url');
+  if (valor.length > 3500) return;
+  res.setHeader('Set-Cookie', nomeCookie(v.id) + '=' + valor + '; Path=/api/checkout; Max-Age=259200; HttpOnly; Secure; SameSite=Lax');
+}
+
+export function completarComCookie(req, v) {
+  const m = new RegExp('(?:^|;\\s*)' + nomeCookie(v.id) + '=([A-Za-z0-9_-]+)').exec(req.headers.cookie || '');
+  if (!m) return v;
+  let salvo;
+  try { salvo = JSON.parse(Buffer.from(m[1], 'base64url').toString('utf8')); } catch { return v; }
+  const r = { ...v };
+  if (!r.pix && salvo.pix) r.pix = salvo.pix;
+  if (!r.boleto && salvo.boleto) r.boleto = salvo.boleto;
+  if (!r.amount && salvo.amount) r.amount = salvo.amount;
+  // Consulta sem status reconhecível: mantém o último status conhecido em vez de "desconhecido".
+  if (r.state === 'unknown' && salvo.state) r.state = salvo.state;
+  return r;
+}
+
 /* Resposta no formato que /checkout/payment.js espera. */
 export async function paraCliente(v, segredo) {
   const payment = {

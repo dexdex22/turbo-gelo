@@ -1,6 +1,6 @@
 import { cotar, ErroPedido, texto } from './_catalogo.js';
 import { gateway } from './_gateway.js';
-import { ErroGateway, paraCliente } from './_comum.js';
+import { ErroGateway, paraCliente, guardarPagamento } from './_comum.js';
 import { responder, origemValida, lerJson, host, ipCliente } from './_http.js';
 
 const UFS = 'AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO'.split(' ');
@@ -118,6 +118,7 @@ export default async function handler(req, res) {
   try {
     const v = await g.criar(venda);
     console.log('[checkout/create]', g.nome, 'venda', v.id, venda.metodo, v.status, v.amount);
+    guardarPagamento(res, v);
     responder(res, 200, await paraCliente(v, g.segredo()));
   } catch (e) {
     if (!(e instanceof ErroGateway)) {

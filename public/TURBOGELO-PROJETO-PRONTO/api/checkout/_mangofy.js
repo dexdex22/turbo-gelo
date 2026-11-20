@@ -50,12 +50,23 @@ const ESTADOS = {
   expired: 'cancelled', refunded: 'refunded', chargeback: 'chargeback', chargedback: 'chargeback',
 };
 
-function converter(p) {
-  const total = Number(p.payment_amount || 0);
+/* A resposta pode vir direto ou embrulhada em { data } / { payment }. */
+function desembrulhar(d) {
+  let p = d;
+  for (let i = 0; i < 3 && p && typeof p === 'object' && !p.payment_code && !p.payment_status; i++) {
+    p = p.data || p.payment || p.transaction || null;
+  }
+  return p && typeof p === 'object' ? p : d;
+}
+
+function converter(bruto, idPedido) {
+  const p = desembrulhar(bruto) || {};
+  const status = String(p.payment_status || p.status || '').toLowerCase();
+  const total = Number(p.payment_amount || p.amount || 0);
   return normalizar({
-    id: p.payment_code,
-    state: ESTADOS[p.payment_status] || 'unknown',
-    status: p.payment_status,
+    id: p.payment_code || idPedido,
+    state: ESTADOS[status] || 'unknown',
+    status: status || null,
     amount: total,
     pix: p.pix && p.pix.pix_qrcode_text ? { qrcode: p.pix.pix_qrcode_text, expirationDate: p.pix.pix_expires_at } : null,
     boleto: p.billet && p.billet.billet_digitable_line
@@ -99,5 +110,10 @@ export async function criar(v) {
 
 export async function buscar(id) {
   if (!/^[A-Za-z0-9-]{1,64}$/.test(id)) throw new ErroGateway('id inválido', 404);
-  return converter(await chamar('GET', '/api/v1/payment/' + encodeURIComponent(id)));
+  const d = await chamar('GET', '/api/v1/payment/' + encodeURIComponent(id));
+  const p = desembrulhar(d) || {};
+  // Formato da consulta (só nomes de campos e status, sem dados do cliente), para ajuste fino.
+  console.log('[mangofy] consulta: campos', JSON.stringify(Object.keys(d || {})),
+    '| campos internos', JSON.stringify(Object.keys(p)), '| status', p.payment_status || p.status);
+  return converter(d, id);
 }

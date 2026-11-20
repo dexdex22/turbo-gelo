@@ -1,5 +1,5 @@
 import { gateway } from './_gateway.js';
-import { ErroGateway, idDoPedido, paraCliente } from './_comum.js';
+import { ErroGateway, idDoPedido, paraCliente, completarComCookie } from './_comum.js';
 import { responder } from './_http.js';
 
 export default async function handler(req, res) {
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   if (!id) return responder(res, 404, { error: 'Pedido não encontrado.' });
 
   try {
-    responder(res, 200, await paraCliente(await g.buscar(id), g.segredo()));
+    responder(res, 200, await paraCliente(completarComCookie(req, await g.buscar(id)), g.segredo()));
   } catch (e) {
     console.error('[checkout/status]', g.nome, 'pedido', id, '→', e instanceof ErroGateway ? e.httpStatus + ' ' + e.message : e);
     if (e instanceof ErroGateway && e.httpStatus === 404) return responder(res, 404, { error: 'Pedido não encontrado.' });
